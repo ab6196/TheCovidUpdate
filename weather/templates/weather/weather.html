@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AB's COVID-19 Updates</title>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <!-- <link rel="stylesheet" href="/styles/weather.css"> -->
+    <style>
+    h1 {
+        text-align: center;
+        margin: 10px;
+        font-family: 'Noto Sans TC', sans-serif;
+        font-size: 4em;
+    }
+    input {
+        display: inline-block;
+        height: 50px;
+        width: 200px;
+        border-radius: 12px;
+        text-align: center;
+        font-size: large;
+    }
+    
+    #go {
+        width: 100px;
+        /* background-color: lightblue; */
+        /* background-color: #4FD5D6; */
+        background-color: #0099CC;
+        border-radius: 12px;
+        height: 50px;
+        font-size: large;
+    }
+    #show-graph {
+        width: 150px;
+        /* background-color: lightblue; */
+        /* background-color: #4FD5D6; */
+        background-color: #4FD5D6;
+        border-radius: 12px;
+        height: 60px;
+        font-size: large;
+    }
+    #show-all {
+        width: 100px;
+        background-color: #66CCFF;
+        border-radius: 12px;
+        height: 50px;
+        font-size: large;
+    }
+    
+    #searchbox {
+        text-align: center;
+        margin: 50px;
+    }
+    #result {
+        border-radius: 5px;
+        border-color: black;
+        border-style: inset;
+        /* background-color: rgb(0, 206, 206); */
+        background-color: #0099CC;
+        /* background-color: #4FD5D6; */
+        /* background-color: #66CCFF; */
+        text-align: center;
+        margin-left: 25%;
+        margin-right: 25%;
+        margin-bottom: 10px;
+        font-family: 'Noto Sans TC', sans-serif;
+    }
+    #result p {
+        margin: 5px;
+    }
+    #navbar {
+        /* background-color: #66CCFF; */
+        background-color: #0099CC;
+        padding: 100px;
+        color: cornsilk;
+        text-decoration: none;
+        width: auto;
+    }
+    #nav-logo:visited, #nav-logo:link, #nav-logo:active {
+        text-decoration: none;
+    }
+    footer {
+        text-align: center;
+        margin-bottom: 10px;
+        
+    }
+    #flag {
+        margin-top: 10px;
+        width: 35%;
+    }
+    #title-bar{
+        font-size: 2em;
+    }
+    #results-labels-active, #results-numbers-active {
+        font-size: 1.5em;
+        color: brown;
+    }
+    #results-labels, #results-numbers {
+        font-size: 1.25em;
+    }
+    body {
+        background-color: #4FD5D6 ;
+        /* background-color: black ; */
+        margin: 0;
+        padding: 0;
+    }
+
+    @media screen and (max-width: 1020px) {
+        h1 {
+            font-size: 2em;
+        }
+        body {
+            background-color: #4FD5D6;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        #navbar {
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
+            width: auto;
+            margin-top: -10px;
+            padding-bottom: 1px;
+        }
+        #result {
+            width: auto;
+            margin: 0;
+            padding-bottom: 0;
+            background-color: #4FD5D6;
+            margin-bottom: -1.2em;
+            border: solid 1px black;
+        }
+        #go {
+            /* background-color: #66CCFF; */
+            margin-top: 10px;
+        }
+        #show-graph {
+            background-color: #0099CC;
+            margin-top: 10px;
+        }
+        footer {
+            display: none !important;
+            margin: auto;
+            padding: auto;
+        }
+        
+    }
+
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <a id = "nav-logo" href=" ">
+        <nav id="navbar">
+            <h1 id="page-title">Welcome to AB's COVID-19 Updates</h1>
+        </nav>
+    </a>
+    <form method="POST" id="searchbox">
+        {% csrf_token %}
+        <!-- <input id = "city" type="text" placeholder="Enter city"> -->
+        <input name="country" id = "country" type="text" placeholder="Enter Country" onfocus="this.placeholder=''" onfocusout="this.placeholder='Enter Country'" pattern="[a-zA-Z][a-zA-Z0-9\s]*" required>
+        <button id = "go" type="submit">Go!</button> 
+        <!-- <button id= "show-all" type="submit">Show All</button>  -->
+    </form>
+    <div id="result">
+        <span id = "output">
+            <img src="{{ covid_cases.flag }}" alt="Image" id="flag">
+            <p id="title-bar"><strong>COVID-19 Cases in <p id="title-bar">{{ covid_cases.country }}</p></strong></p>
+            <br>
+            <button id = "show-graph" type="submit" onclick="window.location.href = 'graph'">Show Visualization</button>
+            <br>
+            <p id="results-labels-active">Active Cases: <p id="results-numbers-active">{{ covid_cases.active }}</p></p>
+            <br>
+            <p id="results-labels">Total Cases: <p id="results-numbers">{{ covid_cases.cases }}</p></p>
+            <br>
+            <p id="results-labels">Critical Cases: <p id="results-numbers">{{ covid_cases.critical }}</p></p>
+            <br>
+            <p id="results-labels"> Total Deaths: <p id="results-numbers">{{ covid_cases.deaths }}</p></p>
+            <br>
+            <p id="results-labels">Total Recovered: <p id="results-numbers">{{ covid_cases.recovered }}</p></p>
+            <br>
+        </span>
+    </div>
+    <br>
+    <footer>Designed by <a href="https://www.linkedin.com/in/ab6196" target="_blank">Aditya Bharadwaj</a></footer>
+</body>
+</html>

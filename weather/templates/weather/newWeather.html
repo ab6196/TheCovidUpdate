@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The COVID-19 Update</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        #jumbo {
+            text-align: center;
+            margin-bottom: 0;
+            background-image: url("{% static 'weather/images/jumbotron-image.jpg'%}");
+            background-position: center;
+            color: white;
+        }
+
+        .row {
+            margin: 20px;
+        }
+
+        #flag {
+            margin: 10px;
+        }
+        .chart {
+            width: 100%;
+            min-height: 450px;
+        }
+        #navbar {
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['line'] });
+        google.charts.setOnLoadCallback(drawChart_Line);
+
+        function drawChart_Line() {
+            console.log("{{ dataset | safe}}");
+            //   const cases = {{ cases_graph | safe}};
+            //   console.log("{{ cases_graph | safe}}");
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Day');
+            data.addColumn('number', 'Cases');
+            data.addColumn('number', 'Deaths');
+            data.addColumn('number', 'Recovered');
+            data.addRows({{ dataset | safe }});
+
+
+        var options = {
+            chart: {
+                'title': 'Number of Cases, Deaths and Recoveries',
+                'subtitle': 'in the past 1 month'
+            },
+            animation: {
+                duration: 1000,
+                easing: 'linear',
+                startup: true,
+            },
+        };
+        var chart = new google.charts.Line(document.getElementById('linechart_material'));
+        chart.draw(data, google.charts.Line.convertOptions(options));        
+        }
+        $(window).resize(function(){
+                     drawChart_Line();
+        });
+    </script>
+
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart_Pie);
+      function drawChart_Pie() {
+        var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Country');
+          data.addColumn('number', 'Number of Cases');
+          data.addRows({{ pie_data | safe }});
+          console.log({{ pie_data | safe }});
+        
+
+        var options = {
+          title: 'Comparative Analysis with Top 10 Affected Countries',
+          pieHole: 0.4,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(data, options);
+      }
+      $(window).resize(function(){
+                     drawChart_Pie();
+        });
+    </script>
+</head>
+<body>
+    <div class="jumbotron" id="jumbo">
+        <h1 class="display-2" id="title">The COVID Update</h1>
+        <p class="lead">Welcome to the COVID-19 Update Page</p>
+        <p>Please use this utility to keep yourself updated with the latest information on the Coronavirus Pandemic</p>
+        <a class="btn btn-primary btn-md smooth-scroll" href="#navbar" role="button">Get Started</a>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top" id="navbar">
+        <a class="navbar-brand" href="infoPage" style="color: white">COVID-19 Info</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="#" style="color: black">Home <span class="sr-only">(current)</span></a>
+                <!-- <a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">About Me</a> -->
+                <a class="btn btn-social-icon btn-linkedin" href="https://www.linkedin.com/in/ab6196" target="_blank"><span class="fa fa-linkedin" style="color: white"></span></a>
+            </div>
+        </div>
+        <form method="POST" class="form-inline">
+            {% csrf_token %}
+            <input class="form-control mr-sm-2" type="text" name="country" placeholder="Enter Country" aria-label="Search" onfocus="this.placeholder=''" onfocusout="this.placeholder='Enter Country'" pattern="[a-zA-Z][a-zA-Z0-9\s]*" required>
+            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </nav>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card text-center">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">COVID-19 Cases in {{ covid_cases.country }}</a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" href="#">Visualization</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Contact Information</a>
+                        </li> -->
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <img src="{{ covid_cases.flag }}" alt="Image" id="flag">
+                    <hr class="my-6">
+                    <p class="card-text text-danger"><b>Active</b></p>
+                    <p class="card-text text-danger">{{ covid_cases.active }}</p>
+                    <hr class="my-6">
+                    <p class="card-text">Cumulative</p>
+                    <p class="card-text">{{ covid_cases.cases }}</p>
+                    <hr class="my-6">
+                    <p class="card-text">Critical</p>
+                    <p class="card-text">{{ covid_cases.critical }}</p>
+                    <hr class="my-6">
+                    <p class="card-text text-danger" >Deaths</p>
+                    <p class="card-text text-danger">{{ covid_cases.deaths }}</p>
+                    <hr class="my-6">
+                    <p class="card-text">Recovered</p>
+                    <p class="card-text">{{ covid_cases.recovered }}</p>
+                    <!-- <hr class="my-6">
+                    <a href="#" class="btn btn-primary">Contact Info</a> -->
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card text-center">
+                <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills">
+                        <li class="nav-item">
+                            <a class="nav-link active">Visualization</a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" href="#">Contact Info</a>
+                        </li> -->
+                        <!-- <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        </li> -->
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <!-- <h5 class="card-title">Special title treatment</h5> -->
+                    <div id="linechart_material" class="card-text chart"></div>
+                </div>
+                <div class="card-body">
+                    <div id="donutchart" class="chart"></div>
+                </div>
+                <div class="card-footer text-muted" style="font-size: 0.75em">
+                    Source: Johns Hopkins University 
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
